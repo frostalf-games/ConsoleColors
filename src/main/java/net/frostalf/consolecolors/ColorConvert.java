@@ -27,11 +27,9 @@ package net.frostalf.consolecolors;
  *
  * @author Frostalf
  */
-public class ColorEnum {
+public class ColorConvert {
 
-    private static ColorEnum instance;
-
-    private ColorEnum() {
+    public ColorConvert() {
     }
 
     /**
@@ -40,7 +38,7 @@ public class ColorEnum {
      * @return returns hex value
      * @throws IllegalArgumentException If 8 bit number is greater than 256 or less than 0
      */
-    public String getHexValue(int num) throws IllegalArgumentException {
+    public static String getHexValue(int num) throws IllegalArgumentException {
         if (num > 256 || num < 0) {
             throw new IllegalArgumentException();
         }
@@ -61,7 +59,7 @@ public class ColorEnum {
      * @throws IllegalArgumentException if hex string is greater then 6
      * characters or doesn't contain valid rgb values
      */
-    public int getIntValue(String hex) throws IllegalArgumentException {
+    public static int getIntValue(String hex) throws IllegalArgumentException {
         int rgb = 0;
         int r = 0;
         int g = 0;
@@ -103,7 +101,7 @@ public class ColorEnum {
      * @return returns message with escape sequence
      * @throws IllegalArgumentException if number provided is greater than 256
      */
-    public String escapeSecquence(int num, String message) throws IllegalArgumentException {
+    public static String escapeSecquence(int num, String message) throws IllegalArgumentException {
         if (num > 256) {
             throw new IllegalArgumentException();
         }
@@ -117,18 +115,7 @@ public class ColorEnum {
      * @param message mesage to append color code
      * @return returns message with escape sequence
      */
-    public String escapeSecquence(String hex, String message) {
+    public static String escapeSecquence(String hex, String message) {
         return "\u001b[38;5;" + getIntValue(hex) + "m" + message + "\u001b[0m";
-    }
-
-    /**
-     *
-     * @return Convenience method to return instance of this class
-     */
-    public static ColorEnum getInstance() {
-        if (instance == null) {
-            instance = new ColorEnum();
-        }
-        return instance;
     }
 }

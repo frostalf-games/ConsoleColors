@@ -31,7 +31,11 @@ public class Colors {
 
     public Colors() {}
 
-    public static ColorEnum getColors() {
-        return ColorEnum.getInstance();
+    /**
+     *
+     * @return New Instance of ColorEnum.
+     */
+    public static ColorConvert getNewInstance() {
+        return new ColorConvert();
     }
 }
