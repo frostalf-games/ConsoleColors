@@ -1,7 +1,25 @@
 /*
- * To change this license header, "choose License Headers in Project Properties.
- * To change this template file, "choose Tools | Templates
- * and open the template in the editor.
+ * The MIT License
+ *
+ * Copyright 2020 Frostalf.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package net.frostalf.consolecolors;
 
@@ -307,7 +325,7 @@ public class ColorEnum {
      * @throws IllegalArgumentException if number provided is greater than 256
      */
     public String escapeSecquence(int num, String message) throws IllegalArgumentException {
-        if(num > 256) {
+        if (num > 256) {
             throw new IllegalArgumentException();
         }
         return "\u001b[38;5;" + num + "m" + message + "\u001b[0m";
@@ -318,10 +336,11 @@ public class ColorEnum {
      * @param hex Hex color code to transform to ANSI color code
      * @param message mesage to append color code
      * @return returns message with escape sequence
-     * @throws IllegalArgumentException if hex string is greater then 6 characters
+     * @throws IllegalArgumentException if hex string is greater then 6
+     * characters
      */
     public String escapeSecquence(String hex, String message) throws IllegalArgumentException {
-        if(hex.length() > 6) {
+        if (hex.length() > 6) {
             throw new IllegalArgumentException();
         }
         return "\u001b[38;5;" + getHexMap().get(hex) + "m" + message + "\u001b[0m";
