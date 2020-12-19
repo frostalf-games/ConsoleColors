@@ -23,25 +23,26 @@
  */
 package net.frostalf.consolecolors;
 
+import java.util.Collection;
+
 /**
- *
  * @author Frostalf
  */
 public class ColorConvert {
+
+    public final static String RESET_SEQUENCE = "\u001b[0m";
+    public final static String COLOR_SEQUENCE = "\u001b[38;5;%dm";
 
     public ColorConvert() {
     }
 
     /**
-     *
      * @param num ANSI color code
      * @return returns hex value
      * @throws IllegalArgumentException If 8 bit number is greater than 256 or less than 0
      */
     public static String getHexValue(int num) throws IllegalArgumentException {
-        if (num > 256 || num < 0) {
-            throw new IllegalArgumentException();
-        }
+        ColorChecker.checkColorCode(num);
         int red = (num & 0x0ff) << 16;
         int green = (num & 0x0ff) << 8;
         int blue = (num & 0x0ff);
@@ -53,11 +54,10 @@ public class ColorConvert {
     }
 
     /**
-     *
      * @param hex Hex color code
      * @return returns ANSI color code
      * @throws IllegalArgumentException if hex string is greater then 6
-     * characters or doesn't contain valid rgb values
+     *                                  characters or doesn't contain valid rgb values
      */
     public static int getIntValue(String hex) throws IllegalArgumentException {
         int rgb = 0;
@@ -65,14 +65,14 @@ public class ColorConvert {
         int g = 0;
         int b = 0;
         if (hex.contains(",")) {
-            String rgbs[] = hex.split(",");
+            final String[] rgbs = hex.split(",");
             if (rgbs.length == 3) {
-                r = Integer.valueOf(rgbs[0]);
-                g = Integer.valueOf(rgbs[1]);
-                b = Integer.valueOf(rgbs[2]);
-                if(r > 256 || g > 256 || b > 256 || r < 0 || g < 0 || b < 0) {
-                    throw new IllegalArgumentException();
-                }
+                r = Integer.parseInt(rgbs[0]);
+                g = Integer.parseInt(rgbs[1]);
+                b = Integer.parseInt(rgbs[2]);
+                ColorChecker.checkColorCode(r);
+                ColorChecker.checkColorCode(g);
+                ColorChecker.checkColorCode(b);
                 rgb = 65536 * r + 256 * g + b;
             } else {
                 throw new IllegalArgumentException();
@@ -90,32 +90,61 @@ public class ColorConvert {
         int red2 = (red * 8) / 256;
         int green2 = (green * 8) / 256;
         int blue2 = (blue * 8) / 256;
-        int eightbitvalue = (red2 << 5) | (green2 << 2) | blue2;
-        return eightbitvalue;
+        return (red2 << 5) | (green2 << 2) | blue2;
+    }
+
+    public static String translateColorCode(String message, ColorPlaceholder colorPlaceholder) {
+        return message.replace(colorPlaceholder.getPlaceholder(), String.format(COLOR_SEQUENCE, colorPlaceholder.getColorReplacement()));
     }
 
     /**
+     * This method uses an array of {@link ColorPlaceholder}
+     * to replace all of the defined placeholders in any given string.
      *
-     * @param num ANSI color number
+     * @param message           The message to parse.
+     * @param colorPlaceholders The placeholders to use.
+     * @return The new message.
+     */
+    public static String translateColorCodes(String message, ColorPlaceholder... colorPlaceholders) {
+        for (ColorPlaceholder colorPlaceholder : colorPlaceholders) {
+            message = translateColorCode(message, colorPlaceholder);
+        }
+        return message;
+    }
+
+    /**
+     * This method uses a Collection of {@link ColorPlaceholder}
+     * to replace all of the defined placeholders in any given string.
+     *
+     * @param message           The message to parse.
+     * @param colorPlaceholders The placeholders to use.
+     * @return The new message.
+     */
+    public static String translateColorCodes(String message, Collection<ColorPlaceholder> colorPlaceholders) {
+        for (ColorPlaceholder colorPlaceholder : colorPlaceholders) {
+            message = translateColorCode(message, colorPlaceholder);
+        }
+        return message;
+    }
+
+    /**
+     * @param num     ANSI color number
      * @param message message to append color code
      * @return returns message with escape sequence
      * @throws IllegalArgumentException if number provided is greater than 256
      */
-    public static String escapeSecquence(int num, String message) throws IllegalArgumentException {
-        if (num > 256) {
-            throw new IllegalArgumentException();
-        }
-        return "\u001b[38;5;" + num + "m" + message + "\u001b[0m";
+    public static String escapeSequence(int num, String message) throws IllegalArgumentException {
+        ColorChecker.checkColorCode(num);
+        return "\u001b[38;5;" + num + "m" + message + RESET_SEQUENCE;
     }
 
     /**
-     *
-     * @param hex Hex color code(Either 6 character hex, or 3 number values
-     * separated with a ',') to transform to ANSI color code
+     * @param hex     Hex color code(Either 6 character hex, or 3 number values
+     *                separated with a ',') to transform to ANSI color code
      * @param message mesage to append color code
      * @return returns message with escape sequence
      */
-    public static String escapeSecquence(String hex, String message) {
-        return "\u001b[38;5;" + getIntValue(hex) + "m" + message + "\u001b[0m";
+    public static String escapeSequence(String hex, String message) {
+        return "\u001b[38;5;" + getIntValue(hex) + "m" + message + RESET_SEQUENCE;
     }
 }
